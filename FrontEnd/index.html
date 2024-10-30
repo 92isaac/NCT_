@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f0f8ff; }
+        .navbar { background-color: #72a7d5; }
+        .navbar-brand, .nav-link { color: #ffffff !important; }
+        .nav-link:hover { background-color: #e8b1e2; color: white !important; }
+        .carousel-caption { background-color: rgba(69, 183, 203, 0.5); }
+        .team-section { background-color: #e6e6fa; padding: 50px 0; }
+        .card { transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .footer { background-color: #72a7d5; color: white; padding: 20px 0; }
+        .social-icon { font-size: 24px; margin-right: 15px; color: white; }
+        .btn-primary { background-color: rgb(99, 214, 99); border-color:rgb(99, 214, 99) ; }
+        .btn-primary:hover { background-color: #ff7b00; border-color: #ff7b00; }
+        a { color: white; text-decoration: none; }
+        a:hover { color:white; text-decoration: underline;}
+        a:visited { color:white ; text-decoration: none; }
+        .bi-twitter-x:before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/%3E%3C/svg%3E");
+  background-size: cover;
+  height: 16px;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-university"></i> Niagara College of Toronto</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#adminLoginModal"><i class="fas fa-user-shield"></i> Admin Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#instructorLoginModal"><i class="fas fa-chalkboard-teacher"></i> Instructor Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#studentLoginModal"><i class="fas fa-user-graduate"></i> Student Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="StaffSchedule.html"><i class="fas fa-calendar-alt"></i> StaffSchedule</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Meet_our_team.html"><i class="fas fa-users"></i>Meet Our Team</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- First image (active) -->
+            <div class="carousel-item active">
+                <img src="images/DG8A1036-scaled.jpeg" class="d-block w-100" alt="Campus">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Our Beautiful Campus</h5>
+                    <p>State-of-the-art facilities for our students.</p>
+                </div>
+            </div>
+            
+            <!-- Second image -->
+            <div class="carousel-item">
+                <img src="images/collegereception1.jpeg" class="d-block w-100" alt="Students">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>List of programs</h5>
+                    <p>Undergraduate Diplomas and Graduate Certificate in areas related to Business, Hospitality, Human Resources, and Computer Programming.</p>
+                </div>
+            </div>
+            
+            <!-- Third image -->
+            <div class="carousel-item">
+                <img src="images/DG8A1085-scaled.jpeg" class="d-block w-100" alt="Classroom">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Service Desks</h5>
+                </div>
+            </div>
+            
+            <!-- Fourth image -->
+            <div class="carousel-item">
+                <img src="images/WhatsApp Image 2024-09-23 at 12.52.43_96524b19.jpg" class="d-block w-100" alt="Library">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            
+            <!-- Fifth image -->
+            <div class="carousel-item">
+                <img src="images/WhatsApp Image 2024-09-23 at 12.52.44_0733d53a.jpg" class="d-block w-100" alt="Sports Facility">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+        </div>
+    
+        <!-- Carousel controls (optional) -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 22 College Street, Toronto ON, M5G IK2 Canada</p>
+                    <p><i class="fas fa-phone"></i> (647) 799-4830</p>
+                    <p><i class="fas fa-envelope"></i><a href="mailto:info@niagaracollegetoronto.ca">info@niagaracollegetoronto.ca</a></p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Follow Us</h5>
+                    <a href="https://www.facebook.com/niagaracollegetoronto" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/niagaracollegetoronto" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/niagaracollegetoronto" class="social-icon"><i class="bi bi-youtube"></i></a>
+                    <a href="https://www.linkedin.com/school/niagara-college-toronto/mycompany/" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminLoginModalLabel">Admin Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="admin_login_form">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="admin_email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="adminPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="text-muted">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     <!-- Instructor Login Modal -->
+     <div class="modal fade" id="instructorLoginModal" tabindex="-1" aria-labelledby="instructorLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instructorLoginModalLabel">Instructor Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="intructorLogin">
+                        <div class="mb-3">
+                            <label for="instructorUsername" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="instructorEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="instructorPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="instructor_Password" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe_itru">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="text-muted">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+     <!-- Student Login Modal -->
+     <div class="modal fade" id="studentLoginModal" tabindex="-1" aria-labelledby="studentLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentLoginModalLabel">Student Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="studentUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="studentUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="studentPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="student_Password" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe_stud">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="text-muted">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="./admin/login.js">
+  
+    </script>
+</body>
+</html>

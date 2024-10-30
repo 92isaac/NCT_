@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <style>
+        body { background-color: #f0f8ff; }
+        .sidebar {
+            background-color: #72a7d5;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .main-content { background-color: #ffffff; min-height: 100vh; }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card-header {
+            background-color: #1e90ff;
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        .btn-primary { background-color: #ff6347; border-color: #ff6347; }
+        .btn-secondary { background-color: #32cd32; border-color: #32cd32; }
+        .table { background-color: white; }
+        .nav-link {
+            color: white;
+            transition: background-color 0.3s;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+        .nav-link:hover { background-color: #9370db; color: white; }
+        .nav-link i { margin-right: 10px; }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #1e90ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#profile">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#schedule">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#resume">
+                                <i class="fas fa-file-alt"></i> Resume
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Welcome message -->
+                <div class="alert alert-success mt-4" id="welcomeMessage"></div>
+
+                <h1 class="mt-4 text-center text-primary">Instructor Dashboard</h1>
+
+                <!-- Profile Section -->
+                <section id="profile" class="mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-user-circle"></i> Instructor Profile</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <img id="profileImage" src="https://via.placeholder.com/150" alt="Instructor" class="profile-img mb-3">
+                                    <input type="file" id="profileImageUpload" accept="image/*" style="display: none;">
+                                    <button class="btn btn-primary" onclick="document.getElementById('profileImageUpload').click()">
+                                        <i class="fas fa-upload"></i> Upload Photo
+                                    </button>
+                                </div>
+                                <div class="col-md-8">
+                                    <p><strong><i class="fas fa-user"></i> First Name:</strong> <span id="firstName"></span></p>
+                                    <p><strong><i class="fas fa-user"></i> Middle Name:</strong> <span id="middleName"></span></p>
+                                    <p><strong><i class="fas fa-user"></i> Last Name:</strong> <span id="lastName"></span></p>
+                                    <p><strong><i class="fas fa-graduation-cap"></i> Education:</strong> <span id="education"></span></p>
+                                    <p><strong><i class="fas fa-envelope"></i> Email:</strong> <span id="email"></span></p>
+                                    <p><strong><i class="fas fa-phone"></i> Phone:</strong> <span id="phone"></span></p>
+                                    <p><strong><i class="fas fa-heart"></i> Hobby:</strong> <span id="hobby"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Class Schedule Section -->
+                <section id="schedule" class="mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-calendar-alt"></i> Class Schedule</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input type="text" id="scheduleSearch" class="form-control" placeholder="Search schedule...">
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <button id="downloadSchedule" class="btn btn-success">
+                                        <i class="fas fa-download"></i> Download Schedule
+                                    </button>
+                                </div>
+                            </div>
+                            <table class="table table-striped" id="scheduleTable">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Campus</th>
+                                        <th>Room No</th>
+                                        <th>Day</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Schedule data will be dynamically added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Resume Upload Section -->
+                <section id="resume" class="mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-file-alt"></i> Resume Upload</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="resumeForm">
+                                <div class="mb-3">
+                                    <label for="resumeFile" class="form-label">Select Resume File</label>
+                                    <input type="file" class="form-control" id="resumeFile" accept=".pdf,.doc,.docx" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-upload"></i> Upload Resume
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fetch instructor data and display welcome message
+        fetch('/api/instructor-data')
+           .then(response => response.json())
+           .then(data => {
+                document.getElementById('firstName').textContent = data.firstName;
+                document.getElementById('middleName').textContent = data.middleName;
+                document.getElementById('lastName').textContent = data.lastName;
+                document.getElementById('education').textContent = data.education;
+                document.getElementById('email').textContent = data.email;
+                document.getElementById('phone').textContent = data.phone;
+                document.getElementById('hobby').textContent = data.hobby;
+
+                // Display welcome message
+                const welcomeMessage = `Hello ${data.firstName} ${data.lastName}, Welcome to NCT Instructor portal`;
+                document.getElementById('welcomeMessage').textContent = welcomeMessage;
+            });
+
+        // Fetch and render class schedule with accept/decline buttons
+        fetch('/api/instructor-schedule')
+           .then(response => response.json())
+           .then(schedules => {
+                const tableBody = document.querySelector('#scheduleTable tbody');
+                schedules.forEach(schedule => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = schedule.course;
+                   row.insertCell(1).textContent = schedule.campus;
+                   row.insertCell(2).textContent = schedule.roomNumber;
+                   row.insertCell(3).textContent = schedule.day;
+                   row.insertCell(4).textContent = schedule.startTime;
+                   row.insertCell(5).textContent = schedule.endTime;
+                    
+                    const actionCell = row.insertCell(3);
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.textContent = 'Accept';
+                    acceptBtn.className = 'btn btn-success btn-sm me-2';
+                    acceptBtn.onclick = () => handleScheduleAction(schedule.id, 'accept');
+
+                    const declineBtn = document.createElement('button');
+                    declineBtn.textContent = 'Decline';
+                    declineBtn.className = 'btn btn-danger btn-sm';
+                    declineBtn.onclick = () => handleScheduleAction(schedule.id, 'decline');
+
+                    actionCell.appendChild(acceptBtn);
+                    actionCell.appendChild(declineBtn);
+                });
+            });
+
+        // Handle schedule accept/decline action
+        function handleScheduleAction(scheduleId, action) {
+            fetch('/api/schedule-action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ scheduleId, action }),
+            })
+           .then(response => response.json())
+           .then(data => {
+                alert(`Schedule ${action}ed successfully`);
+                // Optionally, refresh the schedule table here
+            })
+           .catch(error => {
+                console.error('Error:', error);
+                alert(`Failed to ${action} schedule. Please try again.`);
+            });
+        }
+
+        // Search functionality for schedule
+        document.getElementById('scheduleSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#scheduleTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Download schedule as Excel
+        document.getElementById('downloadSchedule').addEventListener('click', function() {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.table_to_sheet(document.getElementById('scheduleTable'));
+            XLSX.utils.book_append_sheet(wb, ws, "Schedule");
+            XLSX.writeFile(wb, "instructor_schedule.xlsx");
+        });
+
+        // Handle resume upload
+        document.getElementById('resumeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('resume', document.getElementById('resumeFile').files[0]);
+            
+            fetch('/api/upload-resume', {
+                method: 'POST',
+                body: formData
+            })
+           .then(response => response.json())
+           .then(data => {
+                alert('Resume uploaded successfully!');
+            })
+           .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to upload resume. Please try again.');
+            });
+        });
+
+        // Handle profile image upload
+        document.getElementById('profileImageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+
+                const formData = new FormData();
+                formData.append('profileImage', file);
+                
+                fetch('/api/upload-profile-image', {
+                    method: 'POST',
+                    body: formData
+                })
+               .then(response => response.json())
+               .then(data => {
+                    console.log('Profile image uploaded successfully');
+                })
+               .catch(error => {
+                    console.error('Error uploading profile image:', error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
