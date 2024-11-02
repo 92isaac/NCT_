@@ -97,7 +97,30 @@ const formatTo12Hour = (isoString) => {
                 document.getElementById('email').textContent = data.Email;
                 document.getElementById('phone').textContent = data.PhoneNumber;
                 // document.getElementById('hobby').textContent = data.hobby;
+                localStorage.setItem("studId", JSON.stringify({
+                  uniqueId: data.uniqueId
+                }));
             });
+
+            const getIRoom = async (roomid) => {
+              const response = await fetch(
+                `http://localhost:4000/api/room/single/${roomid}`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${useToken?.token}`, // Fixed Authorization header
+                  },
+                }
+              );
+              const data = await response.json();
+              console.log(data)
+              if (data.status === 404) {
+                return "Room not found";
+              }
+              // Return the instructor's name as a string
+              return `${data.data[0].RoomNo}`;
+            };
 
         // Fetch and render class schedule
         fetch('http://localhost:4000/api/schedule', {
@@ -108,16 +131,17 @@ const formatTo12Hour = (isoString) => {
           },
         })
             .then(response => response.json())
-            .then(schedules => {
+            .then(async (schedules) => {
               console.log(schedules)
                 const tableBody = document.querySelector('#scheduleTable tbody');
-                schedules?.data?.forEach(schedule => {
+                schedules?.data?.forEach(async schedule => {
+                  const room = await getIRoom(schedule.RoomId)
                     const row = tableBody.insertRow();
                     row.insertCell(0).textContent = schedule.Course;
                     row.insertCell(1).textContent = formatDate(schedule.Date);
                     row.insertCell(2).textContent = formatTo12Hour(schedule.StartTime);
                     row.insertCell(3).textContent = formatTo12Hour(schedule.EndTime);
-                    row.insertCell(4).textContent = schedule.RoomId;
+                    row.insertCell(4).textContent = room;
                 });
             });
 
@@ -149,7 +173,7 @@ const formatTo12Hour = (isoString) => {
                 const formData = new FormData();
                 formData.append('profileImage', file);
                 
-                fetch('/api/upload-profile-image', {
+                fetch(`http://localhost:4000/api/student/upload/${uniqueId.uniqueId}`, {
                     method: 'POST',
                     body: formData
                 })

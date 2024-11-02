@@ -21,6 +21,32 @@ const getAllRoom = asyncHandler(async(req, res)=>{
   }
 })
 
+const getSingleRoom = asyncHandler(async (req, res) =>{
+    const uniqueId = req.params.uniqueId;
+    const q = 'SELECT * FROM Room WHERE uniqueId = @uniqueId';
+    console.log(uniqueId)
+    console.log(q)
+    try{
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input("uniqueId", sql.UniqueIdentifier, uniqueId)
+        const result = await request.query(q)
+        if(result.recordset.length === 0){
+            return res.status(404).json({
+                message:"Room not found or does not exist",
+                data: []
+            })
+        }
+        res.json(formatResponse(result))
+
+    }catch(err){
+        res.status(500).json({
+            error: "Internal server errort",
+            details: err.message
+        })
+    }
+})
+
 
 const updateRoom = asyncHandler(async (req, res) => {
   const { uniqueId } = req.params;  
@@ -62,4 +88,5 @@ const updateRoom = asyncHandler(async (req, res) => {
 module.exports = {
     updateRoom,
     getAllRoom,
+    getSingleRoom,
 }

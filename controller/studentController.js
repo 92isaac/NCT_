@@ -3,6 +3,7 @@ const { sql } = require('../config/db')
 const { formatResponse } = require('../utils/responseFormatter')
 const { generateRefreshToken, generateToken } = require('../config/generateToken');
 const { token } = require('morgan');
+const { cloudinary_js_config } = require('../config/dbCloudinary');
 
 
 
@@ -232,10 +233,50 @@ const logoutStudent = asyncHandler(async(req, res)=>{
     }
 })
 
+
+const uploadStudentImage = asyncHandler(async(req, res)=>{
+    // router.put('/student/update-image', authenticateToken, upload.single('image'), async (req, res) => {
+        const { StudentId } = req.body; // Send studentId in the request body
+        const file = req.file;
+      
+        if (!file) {
+          return res.status(400).json({ message: 'No image file uploaded' });
+        }
+      
+        try {
+          // Upload image to Cloudinary
+          const result = await cloudinary_js_config.uploader.upload_stream({ resource_type: 'image' }, (err, cloudinaryResult) => {
+            if (err) {
+              return res.status(500).json({ message: 'Cloudinary upload failed', error: err.message });
+            }
+      
+            return cloudinaryResult.secure_url;
+          }).end(file.buffer);
+      
+          const imageUrl = result.secure_url;
+          console.log(imageUrl)
+          // Connect to the database and update the image URL
+          const pool = await sql.connect();
+          await pool.request()
+            .input('StudentId', sql.UniqueIdentifier, StudentId)
+            .input('image', sql.NVarChar, imageUrl)
+            .query('UPDATE Student SET image = @image WHERE uniqueId = @uniqueId');
+      
+          res.status(200).json({ 
+            message: 'Image updated successfully',
+            success:true,
+            imageUrl });
+        } catch (err) {
+          res.status(500).json({ message: 'Internal server error', error: err.message });
+        }
+    //   });
+})
+
 module.exports = {
     updateStudentProfile,
     loginStudentCtrl, 
     logoutStudent,
     getStudentProfile,
+    uploadStudentImage
 
 }
