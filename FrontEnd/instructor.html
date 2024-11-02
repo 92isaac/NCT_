@@ -97,8 +97,8 @@
                                     </button>
                                 </div>
                                 <div class="col-md-8">
+                                    <p><strong><i class="fas fa-user"></i> Title:</strong> <span id="middleName"></span></p>
                                     <p><strong><i class="fas fa-user"></i> First Name:</strong> <span id="firstName"></span></p>
-                                    <p><strong><i class="fas fa-user"></i> Middle Name:</strong> <span id="middleName"></span></p>
                                     <p><strong><i class="fas fa-user"></i> Last Name:</strong> <span id="lastName"></span></p>
                                     <p><strong><i class="fas fa-graduation-cap"></i> Education:</strong> <span id="education"></span></p>
                                     <p><strong><i class="fas fa-envelope"></i> Email:</strong> <span id="email"></span></p>
@@ -136,6 +136,7 @@
                                         <th>Day</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -171,139 +172,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Fetch instructor data and display welcome message
-        fetch('/api/instructor-data')
-           .then(response => response.json())
-           .then(data => {
-                document.getElementById('firstName').textContent = data.firstName;
-                document.getElementById('middleName').textContent = data.middleName;
-                document.getElementById('lastName').textContent = data.lastName;
-                document.getElementById('education').textContent = data.education;
-                document.getElementById('email').textContent = data.email;
-                document.getElementById('phone').textContent = data.phone;
-                document.getElementById('hobby').textContent = data.hobby;
-
-                // Display welcome message
-                const welcomeMessage = `Hello ${data.firstName} ${data.lastName}, Welcome to NCT Instructor portal`;
-                document.getElementById('welcomeMessage').textContent = welcomeMessage;
-            });
-
-        // Fetch and render class schedule with accept/decline buttons
-        fetch('/api/instructor-schedule')
-           .then(response => response.json())
-           .then(schedules => {
-                const tableBody = document.querySelector('#scheduleTable tbody');
-                schedules.forEach(schedule => {
-                    const row = tableBody.insertRow();
-                    row.insertCell(0).textContent = schedule.course;
-                   row.insertCell(1).textContent = schedule.campus;
-                   row.insertCell(2).textContent = schedule.roomNumber;
-                   row.insertCell(3).textContent = schedule.day;
-                   row.insertCell(4).textContent = schedule.startTime;
-                   row.insertCell(5).textContent = schedule.endTime;
-                    
-                    const actionCell = row.insertCell(3);
-                    const acceptBtn = document.createElement('button');
-                    acceptBtn.textContent = 'Accept';
-                    acceptBtn.className = 'btn btn-success btn-sm me-2';
-                    acceptBtn.onclick = () => handleScheduleAction(schedule.id, 'accept');
-
-                    const declineBtn = document.createElement('button');
-                    declineBtn.textContent = 'Decline';
-                    declineBtn.className = 'btn btn-danger btn-sm';
-                    declineBtn.onclick = () => handleScheduleAction(schedule.id, 'decline');
-
-                    actionCell.appendChild(acceptBtn);
-                    actionCell.appendChild(declineBtn);
-                });
-            });
-
-        // Handle schedule accept/decline action
-        function handleScheduleAction(scheduleId, action) {
-            fetch('/api/schedule-action', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ scheduleId, action }),
-            })
-           .then(response => response.json())
-           .then(data => {
-                alert(`Schedule ${action}ed successfully`);
-                // Optionally, refresh the schedule table here
-            })
-           .catch(error => {
-                console.error('Error:', error);
-                alert(`Failed to ${action} schedule. Please try again.`);
-            });
-        }
-
-        // Search functionality for schedule
-        document.getElementById('scheduleSearch').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#scheduleTable tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        // Download schedule as Excel
-        document.getElementById('downloadSchedule').addEventListener('click', function() {
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.table_to_sheet(document.getElementById('scheduleTable'));
-            XLSX.utils.book_append_sheet(wb, ws, "Schedule");
-            XLSX.writeFile(wb, "instructor_schedule.xlsx");
-        });
-
-        // Handle resume upload
-        document.getElementById('resumeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('resume', document.getElementById('resumeFile').files[0]);
-            
-            fetch('/api/upload-resume', {
-                method: 'POST',
-                body: formData
-            })
-           .then(response => response.json())
-           .then(data => {
-                alert('Resume uploaded successfully!');
-            })
-           .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to upload resume. Please try again.');
-            });
-        });
-
-        // Handle profile image upload
-        document.getElementById('profileImageUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profileImage').src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-
-                const formData = new FormData();
-                formData.append('profileImage', file);
-                
-                fetch('/api/upload-profile-image', {
-                    method: 'POST',
-                    body: formData
-                })
-               .then(response => response.json())
-               .then(data => {
-                    console.log('Profile image uploaded successfully');
-                })
-               .catch(error => {
-                    console.error('Error uploading profile image:', error);
-                });
-            }
-        });
-    </script>
+    <script src="./instructor/instructor.js"></script>
 </body>
 </html>

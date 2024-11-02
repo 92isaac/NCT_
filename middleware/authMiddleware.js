@@ -3,6 +3,30 @@ const asyncHandler = require("express-async-handler")
 const { sql} = require("../config/db")
 
 
+const authorize = (userType) => asyncHandler(async (req, res, next) => {
+    const { Token } = req.cookies || req.headers.authorization;
+
+    if (!Token) {
+        return res.status(401).json({ message: 'Not authorized, token missing' });
+    }
+
+    try {
+        const pool = await sql.connect();
+        const query = `SELECT * FROM ${userType} WHERE Token = @Token`;
+        const result = await pool.request().input('Token', sql.NVarChar, Token).query(query);
+
+        if (!result.recordset[0]) {
+            return res.status(401).json({ message: 'Not authorized' });
+        }
+
+        req.user = result.recordset[0]; 
+        next();
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
 
 
 const isAdmin = asyncHandler(async(req, res, next)=>{
@@ -92,5 +116,6 @@ const authMiddleware = asyncHandler(async(req, res, next)=>{
 
 module.exports ={
     isAdmin,
-    authMiddleware
+    authMiddleware,
+    authorize
 }

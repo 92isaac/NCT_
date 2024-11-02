@@ -43,6 +43,96 @@ const updateInstructorProfile = asyncHandler(async (req, res) => {
 });
 
 
+
+
+// const getInstructorProfile = asyncHandler(async (req, res) => {
+//     console.log(req.headers.authorization)
+ 
+// const authHeader = req.headers.authorization; 
+// const Token = authHeader && authHeader.split(' ')[1];
+// console.log(Token)
+
+//   if (!Token) {
+//     return res.status(401).json({ message: 'Not authorized, token missing' });
+//   }
+
+//   try {
+//     const pool = await sql.connect();
+//     const result = await pool.request()
+//       .input('Token', sql.NVarChar, Token)
+//       .query(`SELECT * FROM Instructor WHERE Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVJZCI6IjVGNTZFODE2LTFERjEtNDhFMC1CNEQ5LTIxRTVBQTBCRDlDQSIsImlhdCI6MTczMDUxNjMxNCwiZXhwIjoxNzMwNjAyNzE0fQ.KbzlzIjZNPKt7Uet0NDEo_HatxnumCCwObeqidP2xWE'`);
+    
+//     const instructor = result.recordset[0];
+
+//     if (!instructor) {
+//       return res.status(404).json({ message: 'Instructor not found' });
+//     }
+
+ 
+//     res.status(200).json({
+//       uniqueId: instructor.uniqueId,
+//       FirstName: instructor.FirstName,
+//       LastName: instructor.LastName,
+//       Email: instructor.Email,
+//       PhoneNumber: instructor.PhoneNumber,
+//       Education: instructor.Education,
+//       Bio: instructor.Bio,
+//       Department: instructor.Department,
+//       image: instructor.image,
+//       title: instructor.title,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ error: "Internal server error", details: err.message });
+//   }
+// });
+
+
+
+
+const getInstructorProfile = asyncHandler(async (req, res) => {
+    // console.log("Authorization Header:", req.headers.authorization);
+  
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1].trim();
+    // console.log("Extracted Token:", token);
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Not authorized, token missing' });
+    }
+  
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request()
+        .input('Token', sql.NVarChar, token.trim())
+        .query("SELECT * FROM Instructor WHERE Token = @Token");
+  
+      const instructor = result.recordset[0];
+  
+      if (!instructor) {
+        return res.status(404).json({ message: 'Instructor not found' });
+      }
+  
+      res.status(200).json({
+        uniqueId: instructor.uniqueId,
+        FirstName: instructor.FirstName,
+        LastName: instructor.LastName,
+        Email: instructor.Email,
+        PhoneNumber: instructor.PhoneNumber,
+        Education: instructor.Education,
+        Bio: instructor.Bio,
+        Department: instructor.Department,
+        image: instructor.image,
+        title: instructor.title,
+      });
+    } catch (err) {
+      console.error("Database Error:", err);
+      res.status(500).json({ error: "Internal server error", details: err.message });
+    }
+  });
+  
+
+
+
 // const loginStudentCtrl = asyncHandler(async (req, res)=>{
 //     const { Email, Password } = req.body;
 //     console.log(Email, Password)
@@ -92,54 +182,116 @@ const updateInstructorProfile = asyncHandler(async (req, res) => {
 
 
 
-const loginInstructorCtrl = asyncHandler(async (req, res)=>{
+// const loginInstructorCtrl = asyncHandler(async (req, res)=>{
+//     const { Email, Password } = req.body;
+//     console.log(Email, Password)
+//     try{
+//         const pool = await sql.connect()
+//         const result = await pool.request()
+//         .input('Email', sql.NVarChar, Email)
+//         .query('SELECT * FROM Instructor WHERE Email = @Email')
+
+//         const findUser = result.recordset[0];
+//         console.log(findUser)
+//         console.log(findUser.Password)
+
+//         if(!findUser){
+//             throw new Error("Invalid credentials")
+//         }
+//         const isPassword = Password === findUser.Password
+//         console.log(isPassword)
+//         if(!isPassword){
+//             throw new Error("Invalid credentials")
+//         }
+
+//             const Token = await generateRefreshToken(findUser.uniqueId)
+//             await pool.request()
+//             .input('Token', sql.NVarChar, Token)
+//             .input('uniqueId', sql.UniqueIdentifier, findUser.uniqueId)
+//             .query("UPDATE Instructor SET Token = @Token WHERE uniqueId = @uniqueId")
+//             res.cookie('Token', Token, {
+//                 httpOnly: true,
+//                 maxAge : 48 * 60 * 60 * 1000
+//             });
+//             res.status(200).json({
+//                 uniqueId:findUser.uniqueId,
+//                 FirstName: findUser.FirstName,
+//                 LastName: findUser.LastName,
+//                 Email: findUser.Email,
+//                 image: findUser.image,
+//                 userType: 'Instructor',
+//                 Token: generateToken(findUser.uniqueId)
+//             })
+
+//     }catch(err){
+//         res.status(500).json({
+//             error: err,
+//             details: err.message
+//         })
+//     }
+// })
+
+const loginInstructorCtrl = asyncHandler(async (req, res) => {
     const { Email, Password } = req.body;
-    console.log(Email, Password)
-    try{
-        const pool = await sql.connect()
-        const result = await pool.request()
+    console.log("Login Attempt:", Email, Password);
+  
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request()
         .input('Email', sql.NVarChar, Email)
-        .query('SELECT * FROM Instructor WHERE Email = @Email')
-
-        const findUser = result.recordset[0];
-        console.log(findUser)
-        console.log(findUser.Password)
-
-        if(!findUser){
-            throw new Error("Invalid credentials")
-        }
-        const isPassword = Password === findUser.Password
-        console.log(isPassword)
-        if(!isPassword){
-            throw new Error("Invalid credentials")
-        }
-
-            const Token = await generateRefreshToken(findUser.uniqueId)
-            await pool.request()
-            .input('Token', sql.NVarChar, Token)
-            .input('uniqueId', sql.UniqueIdentifier, findUser.uniqueId)
-            .query("UPDATE Instructor SET Token = @Token WHERE uniqueId = @uniqueId")
-            res.cookie('Token', Token, {
-                httpOnly: true,
-                maxAge : 48 * 60 * 60 * 1000
-            });
-            res.status(200).json({
-                uniqueId:findUser.uniqueId,
-                FirstName: findUser.FirstName,
-                LastName: findUser.LastName,
-                Email: findUser.Email,
-                image: findUser.image,
-                // role: findUser.role,
-                Token: generateToken(findUser.uniqueId)
-            })
-
-    }catch(err){
-        res.status(500).json({
-            error: err,
-            details: err.message
-        })
+        .query('SELECT * FROM Instructor WHERE Email = @Email');
+  
+      const findUser = result.recordset[0];
+      console.log("Found User:", findUser);
+  
+      if (!findUser) {
+        throw new Error("Invalid credentials");
+      }
+  
+      const isPassword = Password === findUser.Password;
+      console.log("Password Match:", isPassword);
+      if (!isPassword) {
+        throw new Error("Invalid credentials");
+      }
+  
+      const Token = await generateRefreshToken(findUser.uniqueId);
+      console.log("Generated Token:", Token);
+  
+      await pool.request()
+        .input('Token', sql.NVarChar, Token)
+        .input('uniqueId', sql.UniqueIdentifier, findUser.uniqueId)
+        .query("UPDATE Instructor SET Token = @Token WHERE uniqueId = @uniqueId");
+  
+      const tokenVerification = await pool.request()
+        .input('uniqueId', sql.UniqueIdentifier, findUser.uniqueId)
+        .query("SELECT Token FROM Instructor WHERE uniqueId = @uniqueId");
+  
+      console.log("Stored Token in DB:", tokenVerification.recordset[0].Token);
+  
+      res.cookie('Token', Token, {
+        httpOnly: true,
+        maxAge: 48 * 60 * 60 * 1000
+      });
+  
+      res.status(200).json({
+        uniqueId: findUser.uniqueId,
+        FirstName: findUser.FirstName,
+        LastName: findUser.LastName,
+        Email: findUser.Email,
+        image: findUser.image,
+        userType: 'Instructor',
+        Token  // Use the same token here as generated
+      });
+  
+    } catch (err) {
+      console.error("Login Error:", err.message);
+      res.status(500).json({
+        error: err,
+        details: err.message
+      });
     }
-})
+  });
+  
 
 const logoutStudent = asyncHandler(async(req, res)=>{
     const { Token } = req.cookies
@@ -185,4 +337,5 @@ module.exports = {
     updateInstructorProfile,
     loginInstructorCtrl, 
     logoutStudent,
+    getInstructorProfile,
 }

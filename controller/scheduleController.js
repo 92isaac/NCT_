@@ -24,7 +24,21 @@ const getAllSchedule = asyncHandler(async(req, res)=>{
 
 
 const acceptSchedule = asyncHandler(async (req, res) => {
-  const { scheduleId, instructorId } = req.params;    // try req.body too if params no work
+
+  const { ScheduleId, InstructorId } = req.body;   
+console.log(ScheduleId, InstructorId)
+  if(!ScheduleId){
+    return res.status(400).json({
+        message: "Schdecule id is missing",
+        success:false,
+    })
+}
+  if(!InstructorId){
+    return res.status(400).json({
+        message: "Instructor id is missing",
+        success:false,
+    })
+}
   const q = `
       UPDATE Schedule 
       SET Status = 'Accepted' 
@@ -34,13 +48,14 @@ const acceptSchedule = asyncHandler(async (req, res) => {
   try {
       const pool = await sql.connect();
       const request = pool.request();
-      request.input('ScheduleId', sql.UniqueIdentifier, scheduleId);
-      request.input('InstructorId', sql.UniqueIdentifier, instructorId);
+      request.input('ScheduleId', sql.UniqueIdentifier, ScheduleId);
+      request.input('InstructorId', sql.UniqueIdentifier, InstructorId);
 
       await request.query(q);
 
       res.status(200).json({
-          message: 'Schedule accepted successfully'
+          message: 'Schedule accepted successfully',
+          success: true,
       });
   } catch (err) {
       res.status(500).json({
@@ -52,7 +67,20 @@ const acceptSchedule = asyncHandler(async (req, res) => {
 
 
 const rejectSchedule = asyncHandler(async (req, res) => {
-  const { scheduleId, instructorId } = req.params;  // try req.body too if params no work
+    const { ScheduleId, InstructorId } = req.body;   
+    console.log(ScheduleId, InstructorId)
+      if(!ScheduleId){
+        return res.status(400).json({
+            message: "Schdecule id is missing",
+            success:false,
+        })
+    }
+      if(!InstructorId){
+        return res.status(400).json({
+            message: "Instructor id is missing",
+            success:false,
+        })
+    }
   const q = `
       UPDATE Schedule 
       SET Status = 'Rejected' 
@@ -62,13 +90,15 @@ const rejectSchedule = asyncHandler(async (req, res) => {
   try {
       const pool = await sql.connect();
       const request = pool.request();
-      request.input('ScheduleId', sql.UniqueIdentifier, scheduleId);
-      request.input('InstructorId', sql.UniqueIdentifier, instructorId);
+      request.input('ScheduleId', sql.UniqueIdentifier, ScheduleId);
+      request.input('InstructorId', sql.UniqueIdentifier, InstructorId);
 
       await request.query(q);
 
       res.status(200).json({
-          message: 'Schedule rejected successfully'
+          message: 'Schedule rejected successfully',
+          success: true,
+
       });
   } catch (err) {
       res.status(500).json({

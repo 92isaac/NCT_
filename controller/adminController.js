@@ -582,6 +582,7 @@ const loginUserCtrl = asyncHandler(async (req, res)=>{
                 Email: findUser.Email,
                 image: findUser.image,
                 role: findUser.role,
+                userType: 'Admin',
                 Token: generateToken(findUser.uniqueId)
             })
 
