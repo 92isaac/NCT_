@@ -1,585 +1,518 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NCT Admin Dashboard</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      .sidebar {
-        background-color: #3498db;
-        min-height: 100vh;
-      }
-      .main-content {
-        background-color: #ecf0f1;
-        min-height: 100vh;
-      }
-      .card {
-        margin-bottom: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      .card-header {
-        background-color: #2c3e50;
-        color: white;
-      }
-      .btn-primary {
-        background-color: #e74c3c;
-        border-color: #e74c3c;
-      }
-      .btn-secondary {
-        background-color: #f39c12;
-        border-color: #f39c12;
-      }
-      .btn-success {
-        background-color: #27ae60;
-        border-color: #27ae60;
-      }
-      .btn-info {
-        background-color: #3498db;
-        border-color: #3498db;
-      }
-      .table {
-        background-color: white;
-      }
-      .nav-link {
-        color: white;
-      }
-      .nav-link:hover {
-        background-color: #2980b9;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-          <div class="position-sticky pt-3">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link active" href="#instructors">
-                  <i class="fas fa-chalkboard-teacher"></i> Instructors
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#students">
-                  <i class="fas fa-user-graduate"></i> Students
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#schedules">
-                  <i class="fas fa-calendar-alt"></i> Class Schedules
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#admissions">
-                  <i class="fas fa-user-plus"></i> Admissions
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                  <i class="fas fa-user-plus"></i> Home
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="instructor.html">
-                  <i class="fas fa-user-plus"></i> Instructor
-                </a>
-              </li>
-            </ul>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NCT Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <style>
+    .sidebar {
+      background-color: #3498db;
+      min-height: 100vh;
+    }
+
+    .main-content {
+      background-color: #ecf0f1;
+      min-height: 100vh;
+    }
+
+    .card {
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      background-color: #2c3e50;
+      color: white;
+    }
+
+    .btn-primary {
+      background-color: #e74c3c;
+      border-color: #e74c3c;
+    }
+
+    .btn-secondary {
+      background-color: #f39c12;
+      border-color: #f39c12;
+    }
+
+    .btn-success {
+      background-color: #27ae60;
+      border-color: #27ae60;
+    }
+
+    .btn-info {
+      background-color: #3498db;
+      border-color: #3498db;
+    }
+
+    .table {
+      background-color: white;
+    }
+
+    .nav-link {
+      color: white;
+    }
+
+    .nav-link:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+        <div class="position-sticky pt-3">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="#instructors">
+                <i class="fas fa-chalkboard-teacher"></i> Instructors
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#students">
+                <i class="fas fa-user-graduate"></i> Students
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#schedules">
+                <i class="fas fa-calendar-alt"></i> Class Schedules
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#admissions">
+                <i class="fas fa-user-plus"></i> Admissions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="fas fa-user-plus"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="instructor.html">
+                <i class="fas fa-user-plus"></i> Instructor
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">NCT Admin Dashboard</h1>
+        </div>
+
+        <!-- Instructors Section -->
+        <section id="instructors">
+          <div class="card">
+            <div class="card-header">
+              <h2>Manage Instructors</h2>
+            </div>
+            <div class="card-body">
+              <button class="btn btn-primary mb-3" onclick="showModal('instructorModal')">
+                Add New Instructor
+              </button>
+              <table class="table table-striped" id="instructorTable">
+                <thead>
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone No</th>
+                    <th>Department</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Instructor data will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
           </div>
-        </nav>
+        </section>
 
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-          <div
-            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-          >
-            <h1 class="h2">NCT Admin Dashboard</h1>
+        <!-- Students Section -->
+        <section id="students">
+          <div class="card">
+            <div class="card-header">
+              <h2>Manage Students</h2>
+            </div>
+            <div class="card-body">
+              <button class="btn btn-secondary mb-3" onclick="showModal('studentModal')">
+                Enroll Student
+              </button>
+              <table class="table table-striped" id="studentTable">
+                <thead>
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone No</th>
+                    <th>Programme</th>
+                    <th>Level</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Student data will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
           </div>
+        </section>
 
-          <!-- Instructors Section -->
-          <section id="instructors">
-            <div class="card">
-              <div class="card-header">
-                <h2>Manage Instructors</h2>
-              </div>
-              <div class="card-body">
-                <button
-                  class="btn btn-primary mb-3"
-                  onclick="showModal('instructorModal')"
-                >
-                  Add New Instructor
-                </button>
-                <table class="table table-striped" id="instructorTable">
-                  <thead>
-                    <tr>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Email</th>
-                      <th>Phone No</th>
-                      <th>Department</th>
-                      <th>Title</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Instructor data will be dynamically added here -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+        <!-- Class Schedules Section -->
 
-          <!-- Students Section -->
-          <section id="students">
-            <div class="card">
-              <div class="card-header">
-                <h2>Manage Students</h2>
-              </div>
-              <div class="card-body">
-                <button
-                  class="btn btn-secondary mb-3"
-                  onclick="showModal('studentModal')"
-                >
-                  Enroll Student
-                </button>
-                <table class="table table-striped" id="studentTable">
-                  <thead>
-                    <tr>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Email</th>
-                      <th>Phone No</th>
-                      <th>Programme</th>
-                      <th>Level</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Student data will be dynamically added here -->
-                  </tbody>
-                </table>
-              </div>
+        <section id="schedules">
+          <div class="card">
+            <div class="card-header">
+              <h2>Manage Class Schedules</h2>
             </div>
-          </section>
+            <div id="error-div">
+              <!-- <p id="UploadError" class="text-white text-xxl-center fw-bolder">Error</p> -->
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <button class="btn btn-success mb-6" onclick="showModal('scheduleModal')">
+                    Create New Schedule
+                  </button>
+                  <input type="file" id="scheduleUpload" accept=".xlsx, .xls" style="display: none" />
+                  <button class="btn btn-primary" onclick="document.getElementById('scheduleUpload').click()">
+                    Upload Schedule
+                  </button>
+                  <button class="btn btn-info" onclick="downloadSchedule()">
+                    Download Schedule
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" id="scheduleSearch" class="form-control" placeholder="Search schedules..." />
+                </div>
+              </div>
+              <table class="table table-striped" id="scheduleTable">
+                <thead>
+                  <tr>
+                    <th>Course</th>
+                    <th>Instructor</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Venue</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Schedule data will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
-          <!-- Class Schedules Section -->
-          <section id="schedules">
-            <div class="card">
-              <div class="card-header">
-                <h2>Manage Class Schedules</h2>
-              </div>
-              <div class="card-body">
-                <button
-                  class="btn btn-success mb-3"
-                  onclick="showModal('scheduleModal')"
-                >
-                  Create New Schedule
-                </button>
-                <table class="table table-striped" id="scheduleTable">
-                  <thead>
-                    <tr>
-                      <th>Course</th>
-                      <th>Instructor</th>
-                      <th>Date</th>
-                      <th>Start Time</th>
-                      <th>End Time</th>
-                      <th>Venue</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Schedule data will be dynamically added here -->
-                  </tbody>
-                </table>
-              </div>
+        <!-- Admissions Section -->
+        <section id="admissions">
+          <div class="card">
+            <div class="card-header">
+              <h2>Manage Admissions</h2>
             </div>
-          </section>
-
-          <!-- Admissions Section -->
-          <section id="admissions">
-            <div class="card">
-              <div class="card-header">
-                <h2>Manage Admissions</h2>
-              </div>
-              <div class="card-body">
-                <button
-                  class="btn btn-info mb-3"
-                  onclick="showModal('admissionModal')"
-                >
-                  Process New Admission
-                </button>
-                <table class="table table-striped" id="admissionTable">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Applicant Name</th>
-                      <th>Course Applied</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Admission data will be dynamically added here -->
-                  </tbody>
-                </table>
-              </div>
+            <div class="card-body">
+              <button class="btn btn-info mb-3" onclick="showModal('admissionModal')">
+                Process New Admission
+              </button>
+              <table class="table table-striped" id="admissionTable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Applicant Name</th>
+                    <th>Course Applied</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Admission data will be dynamically added here -->
+                </tbody>
+              </table>
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </section>
+      </main>
     </div>
+  </div>
 
-    <!-- Modals -->
-    <div class="modal fade" id="instructorModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add/Edit Instructor</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="instructorForm">
-              <input type="hidden" id="instructorId" />
-              <div class="mb-3">
-                <label for="instructorFirstName" class="form-label"
-                  >First Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorFirstName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorLastName" class="form-label"
-                  >Last Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorLastName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorEmail" class="form-label">Email</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorEmail"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorPhone" class="form-label"
-                  >Phone Number</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorPhone"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorPassword" class="form-label"
-                  >Password</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorPassword"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorDepartment" class="form-label"
-                  >Department</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorDepartment"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorEducation" class="form-label"
-                  >Education</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorEducation"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorBio" class="form-label">Bio</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorBio"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="instructorTitle" class="form-label">Title</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="instructorTitle"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-          </div>
+  <!-- Modals -->
+  <div class="modal fade" id="instructorModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add/Edit Instructor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="instructorForm">
+            <input type="hidden" id="instructorId" />
+            <div class="mb-3">
+              <label for="instructorFirstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="instructorFirstName" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorLastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="instructorLastName" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorEmail" class="form-label">Email</label>
+              <input type="text" class="form-control" id="instructorEmail" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorPhone" class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="instructorPhone" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorPassword" class="form-label">Password</label>
+              <input type="text" class="form-control" id="instructorPassword" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorDepartment" class="form-label">Department</label>
+              <input type="text" class="form-control" id="instructorDepartment" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorEducation" class="form-label">Education</label>
+              <input type="text" class="form-control" id="instructorEducation" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorBio" class="form-label">Bio</label>
+              <input type="text" class="form-control" id="instructorBio" required />
+            </div>
+            <div class="mb-3">
+              <label for="instructorTitle" class="form-label">Title</label>
+              <input type="text" class="form-control" id="instructorTitle" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="modal fade" id="studentModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add/Edit Student</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="studentForm">
-              <input type="hidden" id="studentId" />
-              <div class="mb-3">
-                <label for="studentfirstName" class="form-label"
-                  >First Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="studentfirstName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="studentlastName" class="form-label"
-                  >Last Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="studentlastName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="studentEmail" class="form-label">Email</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="studentEmail"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="studentPhone" class="form-label">Phone No</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="studentPhone"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="studentProg" class="form-label">Programme</label>
-                <select class="form-control" id="studentProg" required>
-                  <option value="" disabled selected>Select a Programme</option>
-                  <option value="Accounting">Accounting</option>
-                  <option value="Business General">Business General</option>
-                  <option value="Computer Programming">
-                    Computer Programming
-                  </option>
-                  <option value="Human Resources">Human Resources</option>
-                  <!-- Add more options as needed -->
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="studentLevel" class="form-label">Level</label>
-                <select class="form-control" id="studentLevel" required>
-                  <option value="" disabled selected>Select a Level</option>
-                  <option value="Diploma">Diploma</option>
-                  <option value="Graduate Certificate">
-                    Graduate Certificate
-                  </option>
-                  <option value="Master Degree">Master Degree</option>
-                  <option value="Doctorate Degree">Doctorate Degree</option>
-                  <!-- Add more options as needed -->
-                </select>
-              </div>
+  <div class="modal fade" id="studentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add/Edit Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="studentForm">
+            <input type="hidden" id="studentId" />
+            <div class="mb-3">
+              <label for="studentfirstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="studentfirstName" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentlastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="studentlastName" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentEmail" class="form-label">Email</label>
+              <input type="text" class="form-control" id="studentEmail" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentPhone" class="form-label">Phone No</label>
+              <input type="text" class="form-control" id="studentPhone" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentProg" class="form-label">Programme</label>
+              <select class="form-control" id="studentProg" required>
+                <option value="" disabled selected>Select a Programme</option>
+                <option value="Accounting">Accounting</option>
+                <option value="Business General">Business General</option>
+                <option value="Computer Programming">
+                  Computer Programming
+                </option>
+                <option value="Human Resources">Human Resources</option>
+                <!-- Add more options as needed -->
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="studentLevel" class="form-label">Level</label>
+              <select class="form-control" id="studentLevel" required>
+                <option value="" disabled selected>Select a Level</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Graduate Certificate">
+                  Graduate Certificate
+                </option>
+                <option value="Master Degree">Master Degree</option>
+                <option value="Doctorate Degree">Doctorate Degree</option>
+                <!-- Add more options as needed -->
+              </select>
+            </div>
 
-              <button type="submit" class="btn btn-secondary">Save</button>
-            </form>
-          </div>
+            <button type="submit" class="btn btn-secondary">Save</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="modal fade" id="scheduleModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add/Edit Schedule</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="scheduleForm">
-              <input type="hidden" id="scheduleId" />
-              <div class="mb-3">
-                <label for="scheduleCourse" class="form-label">Course</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="scheduleCourse"
-                  required
-                />
-              </div>
+  <div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add/Edit Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="scheduleForm">
+            <input type="hidden" id="scheduleId" />
+            <div class="mb-3">
+              <label for="scheduleCourse" class="form-label">Course</label>
+              <input type="text" class="form-control" id="scheduleCourse" required />
+            </div>
 
-              <div class="mb-3" id="scheduleInstructor-container">
-                <label for="scheduleInstructor" class="form-label"
-                  >Instructor</label
-                >
-                <select class="form-control" id="scheduleInstructor" required>
-                  <option value="" disabled selected>
-                    Select a start time
-                  </option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="scheduleDate" class="form-label">Date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  id="scheduleDate"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="scheduleStartTime" class="form-label"
-                  >Start Time</label
-                >
-                <!-- <input type="time" name="" id=""> -->
-                <input
-                  type="datetime-local"
-                  name=""
-                  id="scheduleStartTime"
-                  class="form-control"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="scheduleEndTime" class="form-label">End Time</label>
-                <input
-                  type="datetime-local"
-                  name=""
-                  id="scheduleEndTime"
-                  class="form-control"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="campusRoom" class="form-label">Room Id</label>
-                <select class="form-control" id="campusRoom" required>
-               
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="campusRoom2" class="form-label">Venue</label>
-                <select class="form-control" id="campusRoom2" required>
-                  <option value="" disabled selected>Select a room</option>
-                  <option value="Room101">Room 101 - Campus A</option>
-                  <option value="Room102">Room 102 - Campus A</option>
-                  <option value="Room201">Room 201 - Campus B</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-success">Save</button>
-            </form>
-          </div>
+            <div class="mb-3" id="scheduleInstructor-container">
+              <label for="scheduleInstructor" class="form-label">Instructor</label>
+              <select class="form-control" id="scheduleInstructor" required>
+                <option value="" disabled selected>
+                  Select a start time
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="scheduleDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="scheduleDate" required />
+            </div>
+            <div class="mb-3">
+              <label for="scheduleStartTime" class="form-label">Start Time</label>
+              <!-- <input type="time" name="" id=""> -->
+              <input type="datetime-local" name="" id="scheduleStartTime" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="scheduleEndTime" class="form-label">End Time</label>
+              <input type="datetime-local" name="" id="scheduleEndTime" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="campusRoom" class="form-label">Room Id</label>
+              <select class="form-control" id="campusRoom" required></select>
+            </div>
+            <div class="mb-3">
+              <label for="campusRoom2" class="form-label">Venue</label>
+              <select class="form-control" id="campusRoom2" required>
+                <option value="" disabled selected>Select a room</option>
+                <option value="Room101">Room 101 - Campus A</option>
+                <option value="Room102">Room 102 - Campus A</option>
+                <option value="Room201">Room 201 - Campus B</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="modal fade" id="admissionModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Process Admission</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="admissionForm">
-              <input type="hidden" id="admissionId" />
-              <div class="mb-3">
-                <label for="applicantName" class="form-label"
-                  >Applicant Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="applicantName"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="appliedCourse" class="form-label"
-                  >Course Applied</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="appliedCourse"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="admissionStatus" class="form-label">Status</label>
-                <select class="form-select" id="admissionStatus" required>
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-info">Save</button>
-            </form>
-          </div>
+  <div class="modal fade" id="editScheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editScheduleForm">
+            <input type="hidden" id="editScheduleId" />
+            <div class="mb-3">
+              <label for="editScheduleCourse" class="form-label">Course</label>
+              <input type="text" class="form-control" id="editScheduleCourse" required />
+            </div>
+
+            <div class="mb-3" id="scheduleInstructor-container">
+              <label for="editScheduleInstructor" class="form-label">Instructor</label>
+              <select class="form-control" id="editScheduleInstructor" required>
+                <option value="" disabled selected>
+                  Select a start time
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="editScheduleDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="editScheduleDate" required />
+            </div>
+            <div class="mb-3">
+              <label for="editScheduleStartTime" class="form-label">Start Time</label>
+              <!-- <input type="time" name="" id=""> -->
+              <input type="datetime-local" name="" id="editScheduleStartTime" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="editScheduleEndTime" class="form-label">End Time</label>
+              <input type="datetime-local" name="" id="editScheduleEndTime" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label for="editCampusRoom" class="form-label">Room Id</label>
+              <select class="form-control" id="editCampusRoom" required></select>
+            </div>
+            <div class="mb-3">
+              <label for="editCampusRoom2" class="form-label">Venue</label>
+              <select class="form-control" id="editCampusRoom2" required>
+                <option value="" disabled selected>Select a room</option>
+                <option value="Room101">Room 101 - Campus A</option>
+                <option value="Room102">Room 102 - Campus A</option>
+                <option value="Room201">Room 201 - Campus B</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./admin/admin.js"></script>
-  </body>
+  <div class="modal fade" id="admissionModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Process Admission</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="admissionForm">
+            <input type="hidden" id="admissionId" />
+            <div class="mb-3">
+              <label for="applicantName" class="form-label">Applicant Name</label>
+              <input type="text" class="form-control" id="applicantName" required />
+            </div>
+            <div class="mb-3">
+              <label for="appliedCourse" class="form-label">Course Applied</label>
+              <input type="text" class="form-control" id="appliedCourse" required />
+            </div>
+            <div class="mb-3">
+              <label for="admissionStatus" class="form-label">Status</label>
+              <select class="form-select" id="admissionStatus" required>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-info">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./admin/admin.js"></script>
+</body>
+
 </html>

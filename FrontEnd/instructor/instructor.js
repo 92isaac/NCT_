@@ -3,7 +3,7 @@ const Id = localStorage.getItem("uniqueId");
 const useToken = JSON.parse(authData);
 const uniqueId = JSON.parse(Id);
 // console.log(useToken);
-console.log(uniqueId.uniqueId)
+console.log(uniqueId?.uniqueId)
 
 // Redirect based on userType
 if (!useToken?.Token || !useToken.userType) {
@@ -106,7 +106,7 @@ const formatTo12Hour = (isoString) => {
     });
 
 // Fetch and render class schedule with accept/decline buttons
-fetch(`http://localhost:4000/api/admin/instructor-schedule/${uniqueId.uniqueId}`, {
+fetch(`http://localhost:4000/api/admin/instructor-schedule/${uniqueId?.uniqueId}`, {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
@@ -196,10 +196,10 @@ function handleRejectSchedule(ScheduleId) {
    .then(data => {
     console.log(data)
       if(data.success === true) {
-        alert(`Schedule accepted successfully`);
+        alert(`Schedule rejected successfully`);
         window.location.reload();
       }else{
-        alert(`Failed to accept schedule. Please try again.`);
+        alert(`Failed to reject schedule. Please try again.`);
 
       }
     })

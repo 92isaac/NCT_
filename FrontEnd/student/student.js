@@ -100,6 +100,8 @@ const formatTo12Hour = (isoString) => {
                 localStorage.setItem("studId", JSON.stringify({
                   uniqueId: data.uniqueId
                 }));
+                const welcomeMessage = `Hello ${data.FirstName} ${data.LastName}, Welcome to NCT Student portal`;
+                document.getElementById('welcomeMessage').textContent = welcomeMessage;
             });
 
             const getIRoom = async (roomid) => {

@@ -23,7 +23,11 @@ form.addEventListener("submit", async(e)=>{
         if(response.status === 200){
             const data = await response.json();
             console.log(data)
-            localStorage.setItem("authToken", JSON.stringify(data))
+            // localStorage.setItem("authToken", JSON.stringify(data))
+            localStorage.setItem("authToken", JSON.stringify({
+                Token: data.Token,
+                userType: data.userType,
+            }));
             window.location.href = 'adminDashboard.html'
         }else{
             return null;

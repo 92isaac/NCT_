@@ -3,6 +3,8 @@ const { sql } = require('../config/db')
 const { formatResponse } = require('../utils/responseFormatter')
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
+const xlsx = require('xlsx')
+// const multer = require('multer')
 const { generateRefreshToken, generateToken } = require('../config/generateToken');
 const { token } = require('morgan');
 
@@ -634,6 +636,319 @@ const logoutUser = asyncHandler(async(req, res)=>{
     }
 })
 
+// const uploadExcel = asyncHandler(async(req, res)=>{
+//     try{
+//         const fileBuffer = req.file.buffer;
+//         const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
+//         const worksheet = workbook.Sheets[workbook.SheetNames[0]]; 
+//         const scheduleData = xlsx.utils.sheet_to_json(worksheet);
+    
+//         // Loop through each row of the parsed data and insert into the Schedule table
+//         const pool = await sql.connect();
+    
+//         for (const row of scheduleData) {
+//           await pool.request()
+//             .input('InstructorId', sql.UniqueIdentifier, row.InstructorId)
+//             .input('RoomId', sql.UniqueIdentifier, row.RoomId)
+//             .input('Course', sql.NVarChar, row.Course)
+//             .input('Campus', sql.NVarChar, row.Campus)
+//             .input('Date', sql.Date, row.Date)
+//             .input('StartTime', sql.Time, row.StartTime)
+//             .input('EndTime', sql.Time, row.EndTime)
+//             .input('Status', sql.NVarChar, row.Status || 'Pending') 
+//             .query(`
+//               INSERT INTO Schedule (InstructorId, RoomId, Course, Campus, Date, StartTime, EndTime, Status)
+//               VALUES (@InstructorId, @RoomId, @Course, @Campus, @Date, @StartTime, @EndTime, @Status)
+//             `);
+//         }
+    
+//         res.status(200).json({ 
+//             message: 'Schedule data uploaded successfully',
+//             status:true,
+//          });
+        
+//     }catch(err){
+//         res.status(500).json({
+//             error: "Internal Server Error",
+//             details: err.message
+//         })
+//         throw new Error(err)
+//     }
+// })
+
+
+// const uploadExcel = asyncHandler(async (req, res) => {
+//     try {
+//       const fileBuffer = req.file.buffer;
+//       const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
+//       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+//       const scheduleData = xlsx.utils.sheet_to_json(worksheet);
+  
+//       const requiredColumns = ['InstructorId', 'RoomId', 'Course', 'Campus', 'Date', 'StartTime', 'EndTime'];
+  
+
+//       const dataColumns = Object.keys(scheduleData[0]);
+//       for (const column of requiredColumns) {
+//         if (!dataColumns.includes(column)) {
+//           return res.status(400).json({ 
+//             error: `Column '${column}' is missing in the Excel file.`,
+//             status:false,
+//             status_code:400,
+//          });
+//         }
+//       }
+  
+//       const pool = await sql.connect();
+  
+//       for (const row of scheduleData) {
+//         if (!row.InstructorId || !row.RoomId || !row.Course || !row.Campus || !row.StartTime || !row.EndTime) {
+//           return res.status(400).json({ 
+//             error: `Required field(s) missing in the row: ${JSON.stringify(row)}`,
+//             status:false,
+//             status_code:400,
+            
+//          });
+//         }
+  
+   
+//         const date = row.Date ? row.Date : new Date().toISOString().split('T')[0];
+  
+       
+//         const duplicateCheck = await pool.request()
+//           .input('InstructorId', sql.UniqueIdentifier, row.InstructorId)
+//           .input('Date', sql.Date, date)
+//           .query(`
+//             SELECT 1 FROM Schedule WHERE InstructorId = @InstructorId AND Date = @Date
+//           `);
+  
+//         if (duplicateCheck.recordset.length > 0) {
+//           return res.status(409).json({ 
+//             error: `Duplicate entry found for InstructorId ${row.InstructorId} on Date ${date}`,
+//             status:false,
+//             status_code:409,
+//           });
+//         }
+  
+//         await pool.request()
+//           .input('uniqueId', sql.UniqueIdentifier, crypto.randomUUID()) 
+//           .input('InstructorId', sql.UniqueIdentifier, row.InstructorId)
+//           .input('RoomId', sql.UniqueIdentifier, row.RoomId)
+//           .input('Course', sql.NVarChar, row.Course)
+//           .input('Campus', sql.NVarChar, row.Campus)
+//           .input('Date', sql.Date, date)
+//           .input('StartTime', sql.Time, row.StartTime)
+//           .input('EndTime', sql.Time, row.EndTime)
+//           .input('Status', sql.NVarChar, row.Status || 'Pending') 
+//           .query(`
+//             INSERT INTO Schedule (uniqueId, InstructorId, RoomId, Course, Campus, Date, StartTime, EndTime, Status)
+//             VALUES (@uniqueId, @InstructorId, @RoomId, @Course, @Campus, @Date, @StartTime, @EndTime, @Status)
+//           `);
+//       }
+  
+//       res.status(200).json({
+//         message: 'Schedule data uploaded successfully',
+//         status: true,
+//         status_code:200,
+//       });
+  
+//     } catch (err) {
+//       res.status(500).json({
+//         error: "Internal Server Error",
+//         details: err.message
+//       });
+//       throw new Error(err);
+//     }
+//   });
+
+
+const uploadExcel = asyncHandler(async (req, res) => {
+    try {
+      const fileBuffer = req.file.buffer;
+      const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const scheduleData = xlsx.utils.sheet_to_json(worksheet);
+  
+      const requiredColumns = ['InstructorId', 'RoomId', 'Course', 'Campus', 'Date', 'StartTime', 'EndTime'];
+      const dataColumns = Object.keys(scheduleData[0]);
+      const errors = [];
+  
+      // Check for missing columns
+      for (const column of requiredColumns) {
+        if (!dataColumns.includes(column)) {
+          errors.push(`Column '${column}' is missing in the Excel file.`);
+        }
+      }
+  
+      if (errors.length > 0) {
+        return res.status(400).json({
+          error: errors,
+          status: false,
+          status_code: 400,
+        });
+      }
+  
+      const pool = await sql.connect();
+  
+      for (const row of scheduleData) {
+        if (!row.InstructorId || !row.RoomId || !row.Course || !row.Campus || !row.StartTime || !row.EndTime) {
+          errors.push(`Required field(s) missing in the row: ${JSON.stringify(row)}`);
+          continue;
+        }
+  
+        // Validate and parse the date
+        let date;
+        try {
+          date = new Date(row.Date);
+          if (isNaN(date.getTime()) || date.getFullYear() < 1000 || date.getFullYear() > 9999) {
+            throw new Error("Date out of range");
+          }
+          date = date.toISOString().split('T')[0];
+        } catch {
+          date = new Date().toISOString().split('T')[0]; // Default to today's date if invalid
+          errors.push(`Invalid date for row: ${JSON.stringify(row)}, using default date: ${date}`);
+          continue;
+        }
+  
+        // Validate StartTime and EndTime (must be in HH:MM:SS format)
+        const validateTime = (time) => /^([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(time);
+        if (!validateTime(row.StartTime) || !validateTime(row.EndTime)) {
+          errors.push(`Invalid time format for row: ${JSON.stringify(row)}. Expected format HH:MM:SS.`);
+          continue;
+        }
+  
+        // Duplicate check
+        const duplicateCheck = await pool.request()
+          .input('InstructorId', sql.UniqueIdentifier, row.InstructorId)
+          .input('Date', sql.Date, date)
+          .query(`
+            SELECT 1 FROM Schedule WHERE InstructorId = @InstructorId AND Date = @Date
+          `);
+  
+        if (duplicateCheck.recordset.length > 0) {
+          errors.push(`Duplicate entry found for InstructorId ${row.InstructorId} on Date ${date}`);
+          continue;
+        }
+  
+        // Insert into the database
+        await pool.request()
+          .input('uniqueId', sql.UniqueIdentifier, crypto.randomUUID())
+          .input('InstructorId', sql.UniqueIdentifier, row.InstructorId)
+          .input('RoomId', sql.UniqueIdentifier, row.RoomId)
+          .input('Course', sql.NVarChar, row.Course)
+          .input('Campus', sql.NVarChar, row.Campus)
+          .input('Date', sql.Date, date)
+          .input('StartTime', sql.Time, row.StartTime)
+          .input('EndTime', sql.Time, row.EndTime)
+          .input('Status', sql.NVarChar, row.Status || 'Pending')
+          .query(`
+            INSERT INTO Schedule (uniqueId, InstructorId, RoomId, Course, Campus, Date, StartTime, EndTime, Status)
+            VALUES (@uniqueId, @InstructorId, @RoomId, @Course, @Campus, @Date, @StartTime, @EndTime, @Status)
+          `);
+      }
+  
+      if (errors.length > 0) {
+        return res.status(207).json({
+          message: 'Some entries encountered errors',
+          errors,
+          status: false,
+          status_code: 207,
+        });
+      } else {
+        return res.status(200).json({
+          message: 'Schedule data uploaded successfully',
+          status: true,
+          status_code: 200,
+        });
+      }
+  
+    } catch (err) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: "Internal Server Error",
+          details: err.message
+        });
+      }
+      console.error(err);
+    }
+  });
+  
+
+  const updateSchedule = asyncHandler(async (req, res) => {
+    const { uniqueId } = req.params;  
+    const { InstructorId, Date, RoomId, Course, Campus, StartTime, EndTime } = req.body;  
+
+    if( !InstructorId || !Date || !RoomId ||  !Course || !Campus || !StartTime || !EndTime){
+        return res.status(400).json({
+            error: "Missing required field(s)",
+            status: false,
+            status_code: 400
+        });
+    }
+  
+    const q = `
+        UPDATE Schedule 
+        SET InstructorId = @InstructorId, Date = @Date, RoomId = @RoomId, Course = @Course, Campus = @Campus, StartTime = @StartTime, EndTime = @EndTime
+        WHERE uniqueId = @UniqueId
+    `;
+  
+    try {
+        const pool = await sql.connect(); 
+        const request = pool.request();
+  
+        request.input('uniqueId', sql.UniqueIdentifier, uniqueId);
+        request.input('InstructorId', sql.NVarChar, InstructorId);
+        request.input('Date', sql.NVarChar, Date);
+        request.input('RoomId', sql.NVarChar, RoomId);
+        request.input('Course', sql.NVarChar, Course);
+        request.input('Campus', sql.NVarChar, Campus);
+        request.input('StartTime', sql.Time, StartTime);
+        request.input('EndTime', sql.Time, EndTime);
+  
+        await request.query(q);
+  
+        res.status(200).json({
+            message: 'Schedule updated successfully',
+            status_code: 200,
+            uniqueId
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "Internal server error",
+            details: err.message
+        });
+    }
+  });
+
+
+
+  const getSingleSchedule = asyncHandler(async (req, res) =>{
+    const uniqueId = req.params.uniqueId;
+    const q = 'SELECT * FROM Schedule WHERE uniqueId = @uniqueId';
+    console.log(uniqueId)
+    console.log(q)
+    try{
+        const pool = await sql.connect();
+        const request = pool.request();
+        request.input("uniqueId", sql.UniqueIdentifier, uniqueId)
+        const result = await request.query(q)
+        if(result.recordset.length === 0){
+            return res.status(404).json({
+                message:"Schedule not found or does not exist",
+                data: []
+            })
+        }
+        res.json(formatResponse(result))
+
+    }catch(err){
+        res.status(500).json({
+            error: "Internal server errort",
+            details: err.message
+        })
+    }
+})
+  
+  
+
 module.exports = {
     getAllAdmin,
     getAllSuperAdmin,
@@ -655,5 +970,8 @@ module.exports = {
     getSingleInstructor,
     createSchedule,
     deleteSchedule,
-    getInstructorSchedule
+    getInstructorSchedule,
+    uploadExcel,
+    updateSchedule,
+    getSingleSchedule
 }
